@@ -14,7 +14,7 @@ rule argocd-deprecated-k8s-api {
   enabled true
   priority 90
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*" AND (content CONTAINS "apiVersion: extensions/v1beta1" OR (content CONTAINS "apiVersion: apps/v1beta1" AND (content CONTAINS "kind: Deployment" OR content CONTAINS "kind: DaemonSet" OR content CONTAINS "kind: ReplicaSet")))
   MESSAGE "Deprecated Kubernetes API version detected. Using 'extensions/v1beta1' or 'apps/v1beta1' for Deployments, DaemonSets, or ReplicaSets is deprecated and may lead to instability or breakage in future Kubernetes versions. Update to 'apiVersion: apps/v1'. This aligns with Google's general Kubernetes best practices for API versioning. Example fix: Change 'apiVersion: extensions/v1beta1' to 'apiVersion: apps/v1'."
 }
@@ -32,7 +32,7 @@ rule argocd-unpinned-target-revision {
   enabled true
   priority 85
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*" AND content CONTAINS "targetRevision: HEAD"
   MESSAGE "Unpinned Git target revision detected. Using 'HEAD' for 'targetRevision' can lead to non-reproducible deployments and unexpected changes, potentially deploying unreviewed code. Pin to a specific commit SHA or a stable tag for security and reproducibility. Example fix: Change 'targetRevision: HEAD' to 'targetRevision: v1.2.3' or 'targetRevision: <commit-sha>'."
 }
@@ -50,7 +50,7 @@ rule argocd-default-project-usage {
   enabled true
   priority 80
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*" AND content CONTAINS "project: default"
   MESSAGE "Usage of the 'default' Argo CD project detected. The 'default' project often has broader permissions and is not recommended for production workloads. Create and use dedicated Argo CD projects with fine-grained RBAC for better security and isolation. Example fix: Change 'project: default' to 'project: my-secure-project'."
 }
